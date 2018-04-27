@@ -27,6 +27,7 @@ public class ContactsActivity extends AppCompatActivity {
         final Button logoutButton = (Button) findViewById(R.id.logoutButton1);
         final Button nextButton = (Button) findViewById(R.id.nextButton);
         final ListView listViewContacts = (ListView) findViewById(R.id.customListView);
+
         ArrayList<Contact> contacts = new ArrayList<Contact>();
         final DatabaseHelper db = new DatabaseHelper(this);
         db.readContacts(contacts);
@@ -41,16 +42,11 @@ public class ContactsActivity extends AppCompatActivity {
             }
 
         });
-/*
-        nextButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });*/
 
 
-        final CustomAdapter adapter = new CustomAdapter(this,db);
+
+
+        final CustomAdapter adapter = new CustomAdapter(this);
 
         for(int i = 0; i < contacts.size(); i++){
             if(!(contacts.get(i).getcUserID().equals(userID))) {
@@ -59,17 +55,6 @@ public class ContactsActivity extends AppCompatActivity {
             }
         }
 
-
-
-
-        /*adapter.AddContact(new ContactItem(getResources().getString(R.string.contact1),getResources().getDrawable(R.drawable.ic_send_black_24dp)));
-        adapter.AddContact(new ContactItem(getResources().getString(R.string.contact2),getResources().getDrawable(R.drawable.ic_send_black_24dp)));
-        adapter.AddContact(new ContactItem(getResources().getString(R.string.contact3),getResources().getDrawable(R.drawable.ic_send_black_24dp)));
-        adapter.AddContact(new ContactItem(getResources().getString(R.string.contact4),getResources().getDrawable(R.drawable.ic_send_black_24dp)));
-        adapter.AddContact(new ContactItem(getResources().getString(R.string.contact5),getResources().getDrawable(R.drawable.ic_send_black_24dp)));
-        adapter.AddContact(new ContactItem(getResources().getString(R.string.contact6),getResources().getDrawable(R.drawable.ic_send_black_24dp)));
-        adapter.AddContact(new ContactItem(getResources().getString(R.string.contact6),getResources().getDrawable(R.drawable.ic_send_black_24dp)));
-*/
 
         listViewContacts.setAdapter(adapter);
 

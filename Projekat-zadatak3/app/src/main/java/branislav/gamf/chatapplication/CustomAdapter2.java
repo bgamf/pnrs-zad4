@@ -6,12 +6,14 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import org.w3c.dom.Text;
 
 import java.util.ArrayList;
+import java.util.Collection;
 
 public class CustomAdapter2 extends BaseAdapter {
 
@@ -23,6 +25,23 @@ public class CustomAdapter2 extends BaseAdapter {
         mMessages = new ArrayList<MessageItem>();
     }
 
+    public void update(ArrayList<Message> messages,String senderID){
+        mMessages.clear();
+        int i=0;
+        if(messages != null){
+            while(!messages.isEmpty()){
+                MessageItem temp = new MessageItem(messages.get(i).getmMessage(), true, messages.get(i).getmMessageID());
+                if(messages.get(i).getmSenderID().equals(senderID)) {
+                    temp.setBackgroundColor(false);
+                }
+                mMessages.add(temp);
+                messages.remove(messages.get(i));
+
+            }
+        }
+        notifyDataSetChanged();
+
+    }
     public void AddMessage(MessageItem message){
         mMessages.add(message);
         notifyDataSetChanged();
@@ -36,6 +55,10 @@ public class CustomAdapter2 extends BaseAdapter {
     @Override
     public int getCount() {
         return mMessages.size();
+    }
+
+    public MessageItem getMsg(int i){
+        return mMessages.get(i);
     }
 
     @Override
@@ -69,10 +92,10 @@ public class CustomAdapter2 extends BaseAdapter {
         MessageItem message = (MessageItem) getItem(position);
         ViewHolder holder = (ViewHolder) convertView.getTag();
 
-        holder.messageText.setText(message.messageText);
+        holder.messageText.setText(message.getMessage());
         //backgroundColod == true left
         //                == false right
-        if(message.backgroundColor == true){
+        if(message.isBackgroundColor() == true){
             holder.messageText.setBackgroundColor(Color.parseColor("#C0C0C0"));
             holder.messageText.setGravity(Gravity.CENTER_VERTICAL | Gravity.START);;
         }

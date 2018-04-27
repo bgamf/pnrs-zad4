@@ -41,24 +41,11 @@ public class MessageActivity extends AppCompatActivity {
         friendFullName.setText(fullName);
 
         final CustomAdapter2 adapter = new CustomAdapter2(this);
-        /*adapter.AddMessage(new MessageItem(getResources().getString(R.string.message1),true));
-        adapter.AddMessage(new MessageItem(getResources().getString(R.string.message2),false));
-        adapter.AddMessage(new MessageItem(getResources().getString(R.string.message3),true));
-        adapter.AddMessage(new MessageItem(getResources().getString(R.string.message4),false));
-        adapter.AddMessage(new MessageItem(getResources().getString(R.string.message5),true));
-        adapter.AddMessage(new MessageItem(getResources().getString(R.string.message6),false));
-        adapter.AddMessage(new MessageItem(getResources().getString(R.string.message7),true));
-        */
-        ArrayList<Message> messages = new ArrayList<Message>();
+
+        final ArrayList<Message> messages = new ArrayList<Message>();
         db.readMessages(messages,receiverUserID,senderUserID);
-        for(int i = 0; i < messages.size(); i++){
-            if(!(messages.get(i).getmSenderID().equals(senderUserID))) {
-                adapter.AddMessage(new MessageItem(messages.get(i).getmMessage(),true));
-            }
-            else{
-                adapter.AddMessage(new MessageItem(messages.get(i).getmMessage(),false));
-            }
-        }
+
+        adapter.update(messages,senderUserID);
 
         ListView list = (ListView) findViewById(R.id.customListMessages);
         list.setDivider(null);
@@ -68,9 +55,9 @@ public class MessageActivity extends AppCompatActivity {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 MessageItem forDelete = (MessageItem) adapter.getItem(position);
-                adapter.RemoveMessage(forDelete);
-                adapter.notifyDataSetChanged();
-                db.deleteMessage(forDelete.getMessage());
+                db.deleteMessage(forDelete.getMessageID());
+                db.readMessages(messages,receiverUserID,senderUserID);
+                adapter.update(messages,senderUserID);
                 return true;
             }
         });
@@ -100,15 +87,15 @@ public class MessageActivity extends AppCompatActivity {
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               /* Context context = getApplicationContext();
-                CharSequence text = "Message is sent!";
-                int duration = Toast.LENGTH_SHORT;
-                */
                 Toast toast = Toast.makeText(getApplicationContext(),(CharSequence)"Message is sent!",(int) Toast.LENGTH_SHORT);
                 String message = messageTextEdit.getText().toString();
                 Message m = new Message(null,senderUserID,receiverUserID,message);
+
                 db.insertMessage(m);
-                //adapter.AddMessage(new MessageItem(message,false));
+                db.readMessages(messages,receiverUserID,senderUserID);
+
+                adapter.update(messages,senderUserID);
+
                 toast.show();
                 messageTextEdit.setText("");
 
@@ -123,4 +110,6 @@ public class MessageActivity extends AppCompatActivity {
             }
         });
     }
+
+
 }

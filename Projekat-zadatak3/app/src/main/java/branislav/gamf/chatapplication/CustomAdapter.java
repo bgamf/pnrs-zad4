@@ -23,11 +23,9 @@ public class CustomAdapter extends BaseAdapter{
 
     private Context mContext;
     private ArrayList<ContactItem> mContacts;
-    private DatabaseHelper db;
-    public CustomAdapter(Context mContext, DatabaseHelper db) {
+    public CustomAdapter(Context mContext) {
         this.mContext = mContext;
         this.mContacts = new ArrayList<ContactItem>();
-        this.db = db;
     }
 
     public void AddContact(ContactItem contact){
@@ -78,11 +76,12 @@ public class CustomAdapter extends BaseAdapter{
 
 
                     SharedPreferences.Editor editor = mContext.getSharedPreferences("PrefsFile",MODE_PRIVATE).edit();
+
                     bundle.putString("fullNameFromContactList",text.getText().toString());
                     editor.putString("reciever_userID",v.getTag().toString());
                     editor.apply();
-                    Intent intent = new Intent(v.getContext(),MessageActivity.class);
 
+                    Intent intent = new Intent(v.getContext(),MessageActivity.class);
                     intent.putExtras(bundle);
                     v.getContext().startActivity(intent);
                 }

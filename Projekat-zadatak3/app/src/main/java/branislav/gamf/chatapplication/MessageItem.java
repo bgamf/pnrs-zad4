@@ -1,12 +1,22 @@
 package branislav.gamf.chatapplication;
 
 public class MessageItem {
-    public String messageText;
-    public boolean backgroundColor;
+    private String messageText;
+    private String messageID;
+    private boolean backgroundColor;
 
-    public MessageItem(String messageText, boolean backgroundColor) {
+    public MessageItem(String messageText, boolean backgroundColor,String messageID) {
         this.messageText = messageText;
         this.backgroundColor = backgroundColor;
+        this.messageID = messageID;
+    }
+
+    public String getMessageID(){
+        return messageID;
+    }
+
+    public void setMessageID(String messageID){
+        this.messageID = messageID;
     }
 
     public String getMessage() {

@@ -64,14 +64,13 @@ public class DatabaseHelper extends SQLiteOpenHelper{
         values.put(COLUMN_USERNAME,c.getcUserName());
 
         db.insert(TABLE_NAME_CONTACTS,null,values);
-        close();
     }
 
     public String searchForContact(String name,int mod){
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.query(TABLE_NAME_CONTACTS,null,null,null,null,null,null,null);
         if(cursor.getCount() <= 0){
-            close();
+            cursor.close();
             return "-1";
         }
         String temp = "";
@@ -83,8 +82,10 @@ public class DatabaseHelper extends SQLiteOpenHelper{
                 temp = cursor.getString(cursor.getColumnIndex(COLUMN_FIRSTNAME));
             }
             if(temp.equals(name)){
-                close();
-                return cursor.getString(cursor.getColumnIndex(COLUMN_CONTACT_ID));
+                String retVal = cursor.getString(cursor.getColumnIndex(COLUMN_CONTACT_ID));
+                cursor.close();
+                return retVal;
+
             }
         }
         cursor.close();
@@ -109,7 +110,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 
             }
         }
-        close();
+        cursor.close();
     }
 
     public void insertMessage(Message m){
@@ -126,36 +127,35 @@ public class DatabaseHelper extends SQLiteOpenHelper{
     }
     public void readMessages(ArrayList<Message> messages,String receiverUserID,String senderUserID){
         SQLiteDatabase db = getReadableDatabase();
-        Cursor cursor = db.query(TABLE_NAME_MESSAGES,null,null,null,null,null,null,null);
-
+        Cursor cursor = db.query(TABLE_NAME_MESSAGES,null,"(SenderID =? AND ReceiverID =?) OR (SenderID =? AND ReceiverID =?)",
+                new String[]{senderUserID, receiverUserID, receiverUserID, senderUserID},null,null,null,null);
+        messages.clear();
         if(cursor.getCount() <= 0){
         }
         else{
             for(cursor.moveToFirst();!cursor.isAfterLast();cursor.moveToNext()){
-                String s,r;
-                s = cursor.getString(cursor.getColumnIndex(COLUMN_SENDER_ID));
-                r = cursor.getString(cursor.getColumnIndex(COLUMN_RECEIVER_ID));
-                if( ( ( s.equals(senderUserID) )&& ( r.equals(receiverUserID) ) ) || ( ( s.equals(receiverUserID) ) && ( r.equals(senderUserID) ) ) ){
-                    Message temp = new Message(cursor.getString(cursor.getColumnIndex(COLUMN_MESSAGE_ID)),
-                            cursor.getString(cursor.getColumnIndex(COLUMN_SENDER_ID)),
-                            cursor.getString(cursor.getColumnIndex(COLUMN_RECEIVER_ID)),
-                            cursor.getString(cursor.getColumnIndex(COLUMN_MESSAGE)));
-                    messages.add(temp);
-                }
+
+                Message temp = new Message(cursor.getString(cursor.getColumnIndex(COLUMN_MESSAGE_ID)),
+                        cursor.getString(cursor.getColumnIndex(COLUMN_SENDER_ID)),
+                        cursor.getString(cursor.getColumnIndex(COLUMN_RECEIVER_ID)),
+                        cursor.getString(cursor.getColumnIndex(COLUMN_MESSAGE)));
+                messages.add(temp);
+
             }
         }
-        close();
+        cursor.close();
     }
 
-    public void deleteMessage(String message){
+    public void deleteMessage(String messageID){
         SQLiteDatabase db = getWritableDatabase();
         Cursor cursor = db.query(TABLE_NAME_MESSAGES,null,null,null,null,null,null,null);
 
         if(cursor.getCount() <= 0){
         }
         else{
-            db.delete(TABLE_NAME_MESSAGES,"Message=?",new String[]{message});
+            db.delete(TABLE_NAME_MESSAGES,"MessageID=?",new String[]{messageID});
         }
+        cursor.close();
     }
 
 
