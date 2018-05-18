@@ -26,7 +26,6 @@ import java.util.ArrayList;
 public class MessageActivity extends AppCompatActivity {
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -121,7 +120,7 @@ public class MessageActivity extends AppCompatActivity {
                                 public void run() {
                                     if(response){
                                         Toast.makeText(getApplicationContext(),R.string.message_sent,(int) Toast.LENGTH_SHORT).show();
-
+                                        updateMessages(adapter);
                                     }
                                     else{
                                         Toast.makeText(MessageActivity.this,prefs.getString("sendMessage_error",null),Toast.LENGTH_SHORT).show();
@@ -134,12 +133,13 @@ public class MessageActivity extends AppCompatActivity {
                         }catch(IOException e){
                             e.printStackTrace();
                         }
+
                     }
                 }).start();
 
 
 
-                updateMessages(adapter);
+
 
                 messageTextEdit.setText("");
 
@@ -221,5 +221,14 @@ public class MessageActivity extends AppCompatActivity {
             }
         }).start();
     }
+
+    @Override
+    protected  void onResume() {
+        super.onResume();
+        final CustomAdapter2 adapter = new CustomAdapter2(this);
+        updateMessages(adapter);
+
+    }
+
 
 }
