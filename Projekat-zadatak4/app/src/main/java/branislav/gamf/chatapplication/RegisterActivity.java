@@ -1,6 +1,8 @@
 package branislav.gamf.chatapplication;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
@@ -10,7 +12,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.Toast;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -32,8 +39,12 @@ public class RegisterActivity extends AppCompatActivity {
         final boolean[] emailValid = {false};
         final DatabaseHelper db = new DatabaseHelper(this);
 
+        final HttpHelper httphelper = new HttpHelper();
+        final Handler handler = new Handler();
+
         calendar.setMaxDate(Calendar.getInstance().getTime().getTime());
 
+        final String MY_PREFS_NAME = "PrefsFile";
 
 
         usernameTextEdit.addTextChangedListener(new TextWatcher() {
@@ -117,10 +128,41 @@ public class RegisterActivity extends AppCompatActivity {
         registerButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
-                Contact contact = new Contact(null,usernameTextEdit.getText().toString(),
+                /*Contact contact = new Contact(null,usernameTextEdit.getText().toString(),
                         firstNameTextEdit.getText().toString(), lastNameTextEdit.getText().toString());
                 db.insertContact(contact);
-                startActivity(new Intent(RegisterActivity.this,MainActivity.class));
+                startActivity(new Intent(RegisterActivity.this,MainActivity.class));*/
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        JSONObject jsonObject = new JSONObject();
+                        try{
+                            jsonObject.put(httphelper.USERNAME,usernameTextEdit.getText().toString());
+                            jsonObject.put(httphelper.PASSWORD,passwordTextEdit.getText().toString());
+                            jsonObject.put(httphelper.EMAIL,emailTextEdit.getText().toString());
+
+                            final boolean response = httphelper.registerOnServer(RegisterActivity.this,HttpHelper.URL_REGISTER,jsonObject);
+
+                            handler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if(response) {
+                                        Toast.makeText(RegisterActivity.this, R.string.valid_registration, Toast.LENGTH_SHORT).show();
+                                        startActivity(new Intent(RegisterActivity.this, MainActivity.class));
+                                    }else{
+                                        SharedPreferences prefs = getSharedPreferences(MY_PREFS_NAME,MODE_PRIVATE);
+                                        Toast.makeText(RegisterActivity.this,prefs.getString("register_error",null),Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            });
+
+                        }catch (JSONException e){
+                            e.printStackTrace();
+                        }catch (IOException e){
+                            e.printStackTrace();
+                        }
+                    }
+                }).start();
             }
         });
     }

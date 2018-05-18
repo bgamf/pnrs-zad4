@@ -3,6 +3,7 @@
     <string name="login">LOGIN</string>
     <string name="register">REGISTER</string>
     <string name="logout">LOG OUT</string>
+    <string name="refresh">REFRESH</string>
     <string name="contact">my friend</string>
     <string name="send">SEND</string>
     <string name="messageString">message text</string>
@@ -14,7 +15,10 @@
         <item>female</item>
     </string-array>
 
-
+    <string name="valid_registration">Successful registration!</string>
+    <string name="valid_login">Welcome!</string>
+    <string name="valid_logout">Goodbye!</string>
+    <string name="message_sent">Message sent!</string>
     <string name="contact1">Erika Leonard</string>
     <string name="contact2">Rex Ball</string>
     <string name="contact3">Felicia Warner</string>

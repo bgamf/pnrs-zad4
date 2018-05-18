@@ -70,19 +70,13 @@ public class CustomAdapter extends BaseAdapter{
             holder.nextButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
-                    Bundle bundle = new Bundle();
-                    TextView text= bundleConvertView.findViewById(R.id.fullName);
-
+                    TextView text = bundleConvertView.findViewById(R.id.fullName);
 
                     SharedPreferences.Editor editor = mContext.getSharedPreferences("PrefsFile",MODE_PRIVATE).edit();
-
-                    bundle.putString("fullNameFromContactList",text.getText().toString());
-                    editor.putString("reciever_userID",v.getTag().toString());
+                    editor.putString("reciever_username",text.getText().toString());
                     editor.apply();
 
                     Intent intent = new Intent(v.getContext(),MessageActivity.class);
-                    intent.putExtras(bundle);
                     v.getContext().startActivity(intent);
                 }
             });
@@ -100,7 +94,6 @@ public class CustomAdapter extends BaseAdapter{
         holder.firstLetter.setText(contact.getFirstLetter());
         holder.fullName.setText(contact.getFullName());
         holder.nextButton.setImageDrawable(contact.getImage());
-        holder.nextButton.setTag(contact.getcID());
 
         Random rnd = new Random();
         int color = Color.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256));

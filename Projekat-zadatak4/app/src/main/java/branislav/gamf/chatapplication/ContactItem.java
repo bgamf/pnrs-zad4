@@ -6,19 +6,16 @@ public class ContactItem {
     private String firstLetter;
     private String fullName;
     private Drawable image;
-    private String cID;
 
-    public ContactItem(String fullName, Drawable image, String cID) {
+    public ContactItem(String fullName, Drawable image) {
         this.firstLetter = fullName.substring(0,1);
         this.fullName = fullName;
         this.image = image;
-        this.cID = cID;
+
 
     }
 
-    public String getcID(){
-        return cID;
-    }
+
 
     public String getFirstLetter() {
         return firstLetter;

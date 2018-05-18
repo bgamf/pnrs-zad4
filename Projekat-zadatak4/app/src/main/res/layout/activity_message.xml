@@ -19,6 +19,16 @@
         android:layout_alignParentRight="true"
         />
 
+    <Button
+        android:id="@+id/refreshButton1"
+        android:text="@string/refresh"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_toLeftOf="@+id/logoutButton2"
+
+        />
+
     <TextView
         android:id="@+id/friendFullName"
         android:text=""
